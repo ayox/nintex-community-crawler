@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@azure/storage-queue": "^10.1.0",
     "crawler": "^1.2.1",
     "request": "^2.88.0"
   },
