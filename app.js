@@ -1,11 +1,8 @@
 const Crawler = require("crawler");
 const util = require("util");
 const request = require("request");
-const search = "Issue Office 365 Update Item Permissions".toLowerCase();
-const searchKeyWords = search.replace(/ /g, "+");
+const fs = require("fs");
 
-const searchUrl = `https://community.nintex.com/t5/community/page.searchformv3.messagesearchfield.messagesearchfield:autocomplete?t:cp=search/contributions/page&q=${searchKeyWords}`;
-const crawlingResults = [];
 function community($, res) {
   let q = "";
   let a = "";
@@ -61,6 +58,7 @@ function blog($, res) {
 
   crawlingResults.push({ url, q, a, type: "blogCrawler" });
 }
+const crawlingResults = [];
 
 const crawler = new Crawler({
   maxConnections: 10,
@@ -105,7 +103,10 @@ const blogCrawler = new Crawler({
   }
 });*/
 
-function main() {
+function main(search) {
+  search = "Issue Office 365 Update Item Permissions".toLowerCase();
+  const searchKeyWords = search.replace(/ /g, "+");
+  const searchUrl = `https://community.nintex.com/t5/community/page.searchformv3.messagesearchfield.messagesearchfield:autocomplete?t:cp=search/contributions/page&q=${searchKeyWords}`;
   request(searchUrl, function(error, response, body) {
     if (error) return;
     const result = JSON.parse(body);
@@ -148,14 +149,25 @@ function main() {
     "https://community.nintex.com/t5/Technical-Issues/Office-365-Update-Item-Permissions-return-unusable-List-item-URL/ta-p/90251#type=k"
   );
   crawler.on("drain", function() {
-    console.log(
-      crawlingResults.map(r => {
-        r.a = r.a.replace(/(\r\n|\n|\r)/gm, "").replace(/(\t)/gm, "");
-        r.q = r.q.replace(/(\r\n|\n|\r)/gm, "").replace(/(\t)/gm, "");
-        return r;
-      })
-    );
+    const write = crawlingResults.map(r => {
+      r.answer = r.a.replace(/(\r\n|\n|\r)/gm, "").replace(/(\t)/gm, "");
+      r.questions = [r.q.replace(/(\r\n|\n|\r)/gm, "").replace(/(\t)/gm, "")];
+      return r;
+    });
+    fs.writeFileSync("./results.json", JSON.stringify(write));
   });
 }
 
-main();
+const express = require("express");
+const app = express();
+
+app.get("/search", function(req, res) {
+  console.log(req.query);
+  main(req.query.q);
+  res.send("Hello World");
+  console.log('Something')
+});
+
+app.listen(3000, () => {
+  console.log("Listening on 3000");
+});
