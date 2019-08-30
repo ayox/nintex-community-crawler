@@ -10,11 +10,11 @@ function community($, res) {
     "#messageView2_1 > div.MessageView.lia-message-view-forum-message.lia-message-view-display.lia-row-standard-unread.lia-thread-topic.lia-list-row-thread-solved.lia-message-authored-by-you > div > div.lia-quilt-row.lia-quilt-row-main > div.lia-quilt-column.lia-quilt-column-19.lia-quilt-column-right.lia-quilt-column-main-content > div > div.topic-subject-wrapper > div > div > div > h2 > span > div"
   ).text();
   q += $("title").text();
-  q +=
-    "\n" +
-    $("#bodyDisplay > div")
-      .find("p")
-      .text();
+  // q +=
+  //   "\n" +
+  //   $("#bodyDisplay > div")
+  //     .find("p")
+  //     .text();
   a = $(
     `.lia-img-message-type-solution.lia-fa-message.lia-fa-type.lia-fa-solution.lia-fa`
   )
